@@ -73,13 +73,55 @@ final class RMRequest {
     ///   - endpoint: Target endpoint
     ///   - pathComponents: Collection of PathComponents
     ///   - queryParameters: Collection of QueryParameters
-    init(endpoint: RMEndpoint,
+    public init(endpoint: RMEndpoint,
                 pathComponents: [String] = [],
                 queryParameters: [URLQueryItem] = []
     ) {
         self.endpoint = endpoint
         self.pathComponents = pathComponents
         self.queryParameters = queryParameters
+    }
+    
+    convenience init?(url: URL) {
+        let string = url.absoluteString
+        if !string.contains(Constants.baseURL) {
+            return nil
+        }
+        let trimmed = string.replacingOccurrences(of: Constants.baseURL + "/", with: "")
+        if trimmed.contains("/") {
+            let components = trimmed.components(separatedBy: "/")
+            if !components.isEmpty {
+                let endpointString = components[0]
+                if let rmEndpoint = RMEndpoint(rawValue: endpointString) {
+                    self.init(endpoint: rmEndpoint)
+                    return
+                }
+            }
+        } else if trimmed.contains("?") {
+            let components = trimmed.components(separatedBy: "?")
+            if !components.isEmpty , components.count >= 2 {
+                let endpointString = components[0]
+                let queryItemsString = components[1]
+                // value=name&value=name
+                let queryItems: [URLQueryItem] = queryItemsString
+                    .components(separatedBy: "&")
+                    .compactMap { item -> URLQueryItem? in
+                        guard item.contains("=") else { return nil }
+                        let parts = item.components(separatedBy: "=")
+                        guard parts.count == 2 else { return nil }
+
+                        return URLQueryItem(
+                            name: parts[0],
+                            value: parts[1]
+                        )
+                    }
+                if let rmEndpoint = RMEndpoint(rawValue: endpointString) {
+                    self.init(endpoint: rmEndpoint, queryParameters: queryItems)
+                    return
+                }
+            }
+        }
+        return nil
     }
     
 }

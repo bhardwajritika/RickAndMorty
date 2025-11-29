@@ -9,6 +9,7 @@ import UIKit
 
 protocol RMCharacterListViewViewModelDelegate : AnyObject {
     func didLoadInitialCharacters()
+    func didLoadMoreCharacters(with newIndexPaths: [IndexPath])
     func didSelectCharacter(_ character: RMCharacter)
 }
 
@@ -21,13 +22,17 @@ final class RMCharacterListViewViewModel : NSObject {
     
     private var characters: [RMCharacter] = [] {
         didSet {
+            print("creating view models")
             for character in characters {
                 let viewModel = RMCharacterCollectionViewCellViewModel(
                     characterName : character.name,
                     characterStatus: character.status,
                     characterImageURL: URL(string: character.image)
                 )
-                cellViewModels.append(viewModel)
+                if !cellViewModels.contains(viewModel) {
+                    cellViewModels.append(viewModel)
+                }
+                
             }
         }
     }
@@ -56,9 +61,51 @@ final class RMCharacterListViewViewModel : NSObject {
     }
     
     /// Paginate if additional characters are needed
-    public func fetchAdditionalCharacters () {
+    public func fetchAdditionalCharacters (url: URL) {
+        guard !isLoadingMoreCharacters else {
+            return
+        }
+        print("fetching more data")
         isLoadingMoreCharacters = true
-      // fetch characters
+        guard let request = RMRequest(url: url) else {
+            isLoadingMoreCharacters = false
+            return
+        }
+        
+        RMService.shared.execute(request,
+                                 expecting: RMGetAllCharacterResponse.self) { [weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
+            switch result {
+            case .success(let responseModel):
+                print("pre-update: \(strongSelf.cellViewModels.count)")
+                let moreResults = responseModel.results
+                let info = responseModel.info
+                
+                let originalCount = strongSelf.characters.count
+                let newCount = moreResults.count
+                let totalCount = originalCount + newCount
+                let startingIndex = totalCount - newCount
+                let indexPathToAdd: [IndexPath] = Array(startingIndex..<(startingIndex+newCount)).compactMap({
+                    return IndexPath(item: $0, section: 0)
+                })
+                print(indexPathToAdd.count)
+                strongSelf.characters.append(contentsOf: moreResults)
+                strongSelf.apiInfo = info
+                print("ViewModels: \(strongSelf.cellViewModels.count)")
+                DispatchQueue.main.async {
+                    print("post-update: \(strongSelf.cellViewModels.count)")
+                    strongSelf.delegate?.didLoadMoreCharacters(with: indexPathToAdd)
+                     strongSelf.isLoadingMoreCharacters = false
+                    print("post-update: \(strongSelf.cellViewModels.count)")
+                }
+            case .failure(let error):
+                print(String(describing: error))
+                self?.isLoadingMoreCharacters = false
+            }
+            
+        }
     }
     public var shouldShowLoadMoreIndicator: Bool {
         return apiInfo?.next != nil
@@ -121,19 +168,25 @@ extension RMCharacterListViewViewModel : UICollectionViewDataSource , UICollecti
 // MARK: - ScrollView
 extension RMCharacterListViewViewModel: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard shouldShowLoadMoreIndicator , !isLoadingMoreCharacters else { return }
+        guard shouldShowLoadMoreIndicator ,
+            !isLoadingMoreCharacters,
+              !cellViewModels.isEmpty,
+            let nextUrlString = apiInfo?.next,
+            let url = URL(string: nextUrlString) else { return }
         
-        let offset = scrollView.contentOffset.y
-        let totalContentHeight = scrollView.contentSize.height
-        let totalScrollViewFixedHeight = scrollView.frame.size.height
-        
-        
-        if offset >= (totalContentHeight - totalScrollViewFixedHeight) {
-            print("Should start fetching more")
-            fetchAdditionalCharacters()
+        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] t in
+            let offset = scrollView.contentOffset.y
+            let totalContentHeight = scrollView.contentSize.height
+            let totalScrollViewFixedHeight = scrollView.frame.size.height
             
+            
+            if offset >= (totalContentHeight - totalScrollViewFixedHeight - 120) {
+                self?.fetchAdditionalCharacters(url: url)
+                
+            }
+            t.invalidate()
+
         }
-       
     }
     
 }
