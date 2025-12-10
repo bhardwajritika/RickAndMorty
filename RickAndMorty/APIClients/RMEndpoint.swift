@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Represents Unique API endpoints
-enum RMEndpoint : String{
+enum RMEndpoint : String, Hashable, CaseIterable {
     /// Endpoint to get character info
     case character
     

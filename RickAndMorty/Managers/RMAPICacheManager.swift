@@ -1,0 +1,50 @@
+//
+//  RMAPICacheManager.swift
+//  RickAndMorty
+//
+//  Created by Tarun Sharma on 10/12/25.
+//
+
+import Foundation
+
+
+/// Manages in memory session scoped API caches
+ final class RMAPICacheManager {
+     // API URL: Data
+     
+     private var cacheDictionary: [RMEndpoint: NSCache<NSString, NSData>] = [:]
+     
+     
+     init() {
+         setUpCache()
+     }
+     
+     // MARK: - Public
+     
+     public func cacheResponse(for endpoint: RMEndpoint, url: URL?) -> Data? {
+         guard let targetCache = cacheDictionary[endpoint] , let url = url else {
+             return nil
+         }
+         let key = url.absoluteString as NSString
+         return targetCache.object(forKey: key) as Data?
+     }
+     
+     public func setCache(for endpoint: RMEndpoint, url: URL?, data: Data) {
+         guard let targetCache = cacheDictionary[endpoint] , let url = url else {
+             return 
+         }
+         let key = url.absoluteString as NSString
+         targetCache.setObject( data as NSData,forKey: key)
+     }
+     
+     
+     // MARK: - Private functions
+     
+     private func setUpCache() {
+         RMEndpoint.allCases.forEach ({
+             endpoint in
+             cacheDictionary[endpoint] = NSCache<NSString, NSData>()
+         })
+     }
+    
+}
