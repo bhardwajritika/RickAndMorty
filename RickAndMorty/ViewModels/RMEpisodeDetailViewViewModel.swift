@@ -27,7 +27,7 @@ class RMEpisodeDetailViewViewModel {
                 print(String(describing: success))
                 
             case .failure(let error):
-                break
+                print(String(describing: error))
             }
         }
     }
