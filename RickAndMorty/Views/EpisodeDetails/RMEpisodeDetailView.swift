@@ -7,7 +7,14 @@
 
 import UIKit
 
+protocol RMEpisodeDetailViewDelegate: AnyObject {
+    func rmEpisodeDetailView(_ detailView: RMEpisodeDetailView,
+                               didSelect character: RMCharacter)
+}
+
 final class RMEpisodeDetailView: UIView {
+    
+    public weak var delegate: RMEpisodeDetailViewDelegate?
     
     private var viewModel: RMEpisodeDetailViewViewModel? {
         didSet {
@@ -139,6 +146,20 @@ extension RMEpisodeDetailView: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        guard let viewModel = viewModel else {
+            return
+        }
+        let sections = viewModel.cellViewModels
+        
+        let sectionType = sections[indexPath.section]
+        switch sectionType {
+        case .information(let viewModels):
+            break
+        case .characters(let viewModels ):
+            guard let character = viewModel.character(at: indexPath.row) else { return }
+            delegate?.rmEpisodeDetailView(self, didSelect: character)
+            
+        }
     }
 }
 extension RMEpisodeDetailView {

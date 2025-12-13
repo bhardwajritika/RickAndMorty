@@ -43,6 +43,13 @@ final class RMEpisodeDetailViewViewModel {
     
     // MARK: - Public
     
+    public func character(at index: Int) -> RMCharacter? {
+        guard let dataTuple = dataTuple else {
+            return nil
+        }
+        return dataTuple.characters[index]
+    }
+    
     /// Fetch backing episode model
     public func fetchEpisodeData() {
         guard let url = endpointUrl,
