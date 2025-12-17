@@ -29,8 +29,13 @@ struct RMSettingsView: View {
                         .cornerRadius(6)
                     Text(viewModel.title)
                         .padding(.leading, 10)
+                    
+                    Spacer()
                 }
                 .padding(.bottom, 3)
+                .onTapGesture {
+                    viewModel.onTapHandler(viewModel.type)
+                }
                 
             }
     }
@@ -38,6 +43,8 @@ struct RMSettingsView: View {
 
 #Preview {
     RMSettingsView(viewModel: .init(cellViewModel: RMSettingsOption.allCases.compactMap({
-        return RMSettingsCellViewModel(type: $0)
+        return RMSettingsCellViewModel(type: $0) {
+            option in
+        }
     })))
 }
