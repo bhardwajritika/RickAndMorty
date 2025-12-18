@@ -4,9 +4,10 @@
 //
 //  Created by Tarun Sharma on 22/11/25.
 //
-import SafariServices
-import SwiftUI
 import UIKit
+import SwiftUI
+import SafariServices
+import StoreKit
 
 /// Controller to show various app options and settings
 final class RMSettingViewController: UIViewController {
@@ -62,6 +63,9 @@ final class RMSettingViewController: UIViewController {
         }
         else if option == .rateApp {
             // Show rating prompt
+                if let windowScene = view.window?.windowScene {
+                    AppStore.requestReview(in: windowScene)
+                }
         }
     }
 }

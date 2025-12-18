@@ -19,7 +19,7 @@ enum RMSettingsOption : CaseIterable {
     var targetUrl: URL? {
         switch self {
         case .rateApp:
-            return URL(string: "https://iosacademy.io")
+            return nil
         case .contactUs:
             return URL(string: "https://iosacademy.io")
         case .terms:
@@ -31,7 +31,7 @@ enum RMSettingsOption : CaseIterable {
         case .viewSeries:
             return URL(string: "https://www.youtube.com/watch?v=jzV4RdrIfvY&list=PLd3-CCCcbQeJ91WE_NwvKvujeyvrEFMGc")
         case .viewCode:
-            return URL(string: "https://github.com/bhardwajritika/RickAndMorty")
+            return URL(string: "https://github.com/bhardwajritika")
                        }
     }
     
