@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct RMLocation : Codable {
+struct RMLocation : Codable , Equatable {
           let id : Int
           let name : String
           let type : String
