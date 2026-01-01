@@ -39,12 +39,11 @@ final class RMSearchViewViewModel {
         
         // Send API Call
         
-        // Test search text
-        searchText = "Rick Sanchez"
+        print(searchText)
         
         // Build arguments
         var queryParams: [URLQueryItem] = [
-            URLQueryItem(name: "name", value: searchText)
+            URLQueryItem(name: "name", value: searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
         ]
         
         // Add options
