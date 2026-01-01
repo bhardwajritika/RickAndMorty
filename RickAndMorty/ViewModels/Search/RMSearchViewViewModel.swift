@@ -19,7 +19,7 @@ final class RMSearchViewViewModel {
     
     private var optionMapUpdateBlock: (((RMSearchInputViewViewModel.DynamicOption, String)) -> Void)?
     
-    
+    private var searchResultHandler: (() -> Void)?
     
     // MARK: - Init
     
@@ -29,10 +29,53 @@ final class RMSearchViewViewModel {
     
     // MARK: - Public
     
+    public func registerSearchResultHandler(_ block: @escaping () -> Void) {
+        self.searchResultHandler = block
+    }
+    
     public func executeSearch() {
         // Create Request based on filters
+        // https://rickandmortyapi.com/api/character/?name=rick&status=alive
+        
         // Send API Call
-        // Notify view of results, no results, or error
+        
+        // Test search text
+        searchText = "Rick Sanchez"
+        
+        // Build arguments
+        var queryParams: [URLQueryItem] = [
+            URLQueryItem(name: "name", value: searchText)
+        ]
+        
+        // Add options
+        queryParams.append(contentsOf: optionMap.enumerated().compactMap(
+            {
+                _ , element in
+                let key : RMSearchInputViewViewModel.DynamicOption = element.key
+                let value : String = element.value
+                return URLQueryItem(name: key.queryArgument , value: value)
+            }
+        ))
+        
+        // Create request
+        let request = RMRequest(
+            endpoint: config.type.endpoint,
+            queryParameters: queryParams
+        )
+        print(request.url?.absoluteString)
+        
+        // Execute the request
+        RMService.shared.execute(request, expecting: RMGetAllCharacterResponse.self) {
+            
+            // Notify view of results, no results, or error
+            result in
+            switch result {
+            case .success(let model):
+                print(model.results.count)
+            case .failure(let error):
+                break
+            }
+        }
         
     }
     
