@@ -24,6 +24,8 @@ final class RMSearchResultsView: UIView {
         return table
     } ()
     
+    private var locationCellViewModels: [RMLocationTableViewCellViewModel] = []
+    
     // MARK: - Init
     
     override init(frame: CGRect) {
@@ -45,7 +47,7 @@ final class RMSearchResultsView: UIView {
         case .characters(let viewModels):
             setUpCollectionView()
         case .locations(let viewModels):
-            setUpTableView()
+            setUpTableView(viewModels: viewModels)
         case .episodes(let viewModels):
             setUpCollectionView()
         }
@@ -55,8 +57,13 @@ final class RMSearchResultsView: UIView {
         
     }
     
-    private func setUpTableView() {
+    private func setUpTableView(viewModels: [RMLocationTableViewCellViewModel]) {
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.isHidden = false
+        self.locationCellViewModels = viewModels
+        tableView.reloadData()
+
     }
     
     private func addConstraints() {
@@ -66,11 +73,31 @@ final class RMSearchResultsView: UIView {
             tableView.rightAnchor.constraint(equalTo: rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        tableView.backgroundColor = .yellow
     }
     
     public func configure(with viewModel: RMSearchResultViewModel) {
+        self.viewModel = viewModel
+    }
+}
+
+// MARK: - TableView
+
+extension RMSearchResultsView: UITableViewDataSource, UITableViewDelegate {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
+        return locationCellViewModels.count
+    }
+    
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RMLocationTableViewCell.cellIdentifier ,for: indexPath) as? RMLocationTableViewCell else {
+            fatalError("Failed to dequeqe RMLocationTableViewCell")
+        }
+        cell.configure(with: locationCellViewModels[indexPath.row])
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
