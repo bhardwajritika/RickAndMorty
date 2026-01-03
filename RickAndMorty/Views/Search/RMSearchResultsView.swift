@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol RMSearchResultsViewDelegate: AnyObject {
+    func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapLocationAt index: Int)
+}
+
 ///  Shows search results UI (table or collection as needed)
 final class RMSearchResultsView: UIView {
+    
+    weak var delegate: RMSearchResultsViewDelegate?
     
     private var viewModel: RMSearchResultViewModel? {
         didSet {
@@ -97,7 +103,8 @@ extension RMSearchResultsView: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        delegate?.rmSearchResultsView(self, didTapLocationAt: indexPath.row)
     }
 }

@@ -23,6 +23,10 @@ final class RMSearchViewViewModel {
     
     private var noResultsHandler: (() -> Void)?
     
+    private var searchResultModel: Codable?
+    
+    private var locationResults: [RMLocation] = []
+    
     // MARK: - Init
     
     init(config: RMSearchViewController.Config) {
@@ -99,7 +103,6 @@ final class RMSearchViewViewModel {
     private func processSearchResults(model: Codable) {
         var resultsVM: RMSearchResultViewModel?
         if let characterResults = model as? RMGetAllCharacterResponse {
-            print(characterResults.results)
             resultsVM = .characters(characterResults.results.compactMap({
                 return RMCharacterCollectionViewCellViewModel(
                     characterName: $0.name,
@@ -109,7 +112,6 @@ final class RMSearchViewViewModel {
             }))
         }
         else if let episodesResults = model as? RMGetAllEpisodeResponse {
-            print(episodesResults.results)
             resultsVM = .episodes(episodesResults.results.compactMap({
                 return RMCharacterEpisodeCollectionViewCellViewModel(
                     episodeDataUrl: URL(string:$0.url)
@@ -117,12 +119,13 @@ final class RMSearchViewViewModel {
             }))
         }
         else if let locationsResults = model as? RMGetLocationsResponse {
-            print(locationsResults.results)
+            self.locationResults = locationsResults.results
             resultsVM = .locations(locationsResults.results.compactMap({
                 return RMLocationTableViewCellViewModel(location: $0)
             }))
         }
         if let results = resultsVM {
+            self.searchResultModel = model
             self.searchResultHandler?(results)
         } else {
             // fallBack error
@@ -147,5 +150,10 @@ final class RMSearchViewViewModel {
     
     public func registerOptionChangeBlock(_ block: @escaping ((RMSearchInputViewViewModel.DynamicOption, String)) -> Void) {
         self.optionMapUpdateBlock = block
+    }
+    
+    public func locationSearchResult(at index : Int) -> RMLocation? {
+        guard index < locationResults.count else { return nil }
+        return locationResults[index]
     }
 }
