@@ -30,6 +30,7 @@ final class RMSearchViewController: UIViewController {
                 }
             }
             
+            
             var title: String {
                 switch self {
                 case .character :
