@@ -44,6 +44,12 @@ final class RMSearchViewViewModel {
     }
     
     public func executeSearch() {
+        // check searchText is empty
+        guard !searchText.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+        
+        
         // Create Request based on filters
         // https://rickandmortyapi.com/api/character/?name=rick&status=alive
         
@@ -101,7 +107,8 @@ final class RMSearchViewViewModel {
     }
     
     private func processSearchResults(model: Codable) {
-        var resultsVM: RMSearchResultViewModel?
+        var resultsVM: RMSearchResultViewType?
+        var nextUrl: String?
         if let characterResults = model as? RMGetAllCharacterResponse {
             resultsVM = .characters(characterResults.results.compactMap({
                 return RMCharacterCollectionViewCellViewModel(
@@ -110,6 +117,7 @@ final class RMSearchViewViewModel {
                     characterImageURL: URL(string: $0.image)
                 )
             }))
+            nextUrl = characterResults.info.next
         }
         else if let episodesResults = model as? RMGetAllEpisodeResponse {
             resultsVM = .episodes(episodesResults.results.compactMap({
@@ -117,16 +125,19 @@ final class RMSearchViewViewModel {
                     episodeDataUrl: URL(string:$0.url)
                 )
             }))
+            nextUrl = episodesResults.info.next
         }
         else if let locationsResults = model as? RMGetLocationsResponse {
             self.locationResults = locationsResults.results
             resultsVM = .locations(locationsResults.results.compactMap({
                 return RMLocationTableViewCellViewModel(location: $0)
             }))
+            nextUrl = locationsResults.info.next
         }
         if let results = resultsVM {
             self.searchResultModel = model
-            self.searchResultHandler?(results)
+            let vm = RMSearchResultViewModel(results: results, next: nextUrl)
+            self.searchResultHandler?(vm)
         } else {
             // fallBack error
             handleNoResults()
