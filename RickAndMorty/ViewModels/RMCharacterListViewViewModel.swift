@@ -31,7 +31,6 @@ final class RMCharacterListViewViewModel : NSObject {
                 if !cellViewModels.contains(viewModel) {
                     cellViewModels.append(viewModel)
                 }
-                
             }
         }
     }
