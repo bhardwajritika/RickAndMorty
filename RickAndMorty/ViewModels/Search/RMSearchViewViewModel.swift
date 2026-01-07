@@ -27,6 +27,8 @@ final class RMSearchViewViewModel {
     
     private var locationResults: [RMLocation] = []
     
+    private var characterResults: [RMCharacter] = []
+    
     // MARK: - Init
     
     init(config: RMSearchViewController.Config) {
@@ -164,7 +166,16 @@ final class RMSearchViewViewModel {
     }
     
     public func locationSearchResult(at index : Int) -> RMLocation? {
-        guard index < locationResults.count else { return nil }
-        return locationResults[index]
+        guard let searchModel = searchResultModel as? RMGetLocationsResponse else { return nil }
+        return searchModel.results[index]
     }
+    public func characterSearchResult(at index : Int) -> RMCharacter? {
+        guard let searchModel = searchResultModel as? RMGetAllCharacterResponse else { return nil }
+        return searchModel.results[index]
+    }
+    public func episodeSearchResult(at index : Int) -> RMEpisode? {
+        guard let searchModel = searchResultModel as? RMGetAllEpisodeResponse else { return nil }
+        return searchModel.results[index]
+    }
+
 }
