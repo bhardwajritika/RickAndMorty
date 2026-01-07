@@ -77,10 +77,9 @@ final class RMCharacterListViewViewModel : NSObject {
             }
             switch result {
             case .success(let responseModel):
-                print("pre-update: \(strongSelf.cellViewModels.count)")
                 let moreResults = responseModel.results
                 let info = responseModel.info
-                
+                strongSelf.apiInfo = info
                 let originalCount = strongSelf.characters.count
                 let newCount = moreResults.count
                 let totalCount = originalCount + newCount
@@ -88,15 +87,11 @@ final class RMCharacterListViewViewModel : NSObject {
                 let indexPathToAdd: [IndexPath] = Array(startingIndex..<(startingIndex+newCount)).compactMap({
                     return IndexPath(item: $0, section: 0)
                 })
-                print(indexPathToAdd.count)
                 strongSelf.characters.append(contentsOf: moreResults)
-                strongSelf.apiInfo = info
-                print("ViewModels: \(strongSelf.cellViewModels.count)")
+                
                 DispatchQueue.main.async {
-                    print("post-update: \(strongSelf.cellViewModels.count)")
                     strongSelf.delegate?.didLoadMoreCharacters(with: indexPathToAdd)
                      strongSelf.isLoadingMoreCharacters = false
-                    print("post-update: \(strongSelf.cellViewModels.count)")
                 }
             case .failure(let error):
                 print(String(describing: error))
