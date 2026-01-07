@@ -145,11 +145,9 @@ extension RMCharacterListViewViewModel : UICollectionViewDataSource , UICollecti
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let isIphone = UIDevice.current.userInterfaceIdiom == .phone
-        
         let bounds = collectionView.bounds
         let width: CGFloat
-        if isIphone {
+        if UIDevice.isiPhone {
             width = (bounds.width-30)/2
         }
         else {
@@ -177,8 +175,8 @@ extension RMCharacterListViewViewModel: UIScrollViewDelegate {
             let url = URL(string: nextUrlString) else { return }
         
         Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] t in
-            let offset = scrollView.contentOffset.y
-            let totalContentHeight = scrollView.contentSize.height
+            let offset                     = scrollView.contentOffset.y
+            let totalContentHeight         = scrollView.contentSize.height
             let totalScrollViewFixedHeight = scrollView.frame.size.height
             
             
