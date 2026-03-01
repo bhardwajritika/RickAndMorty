@@ -73,7 +73,6 @@ Navigation is handled via a **tab bar–based interface**, with dedicated screen
       <b>Episode Detail Screen</b>
     </td>
   </tr>
-</table>
 <tr>
     <td align="center">
       <img src="./RMScreenshots/LocationList screen.png" width="250" /><br/>
