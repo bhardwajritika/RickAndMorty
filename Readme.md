@@ -1,6 +1,71 @@
-# Swift Rick and Morty App
+# Rick and Morty iOS Client
 
-Full featured iOS app showcasing Rick and Morty API. 
+A production-quality **iOS application built in Swift** that consumes the public  
+[Rick and Morty REST API](https://rickandmortyapi.com/) to display characters, episodes, and locations from the series.
 
-- written in Swift
-- Unit Tested
+The project is architected using **MVVM**, leverages **UIKit** for the core UI. 
+It demonstrates scalable app structure, clean networking abstractions, caching strategies, and modern iOS development practices.
+
+---
+
+## 📱 App Overview
+
+The Rick and Morty iOS Client allows users to explore the entire Rick and Morty universe through a clean, intuitive interface.  
+Users can browse, search, and paginate through characters, episodes, and locations, while benefiting from cached network responses and optimized image loading.
+
+Navigation is handled via a **tab bar–based interface**, with dedicated screens for each domain entity.
+
+---
+
+## ✨ Key Features
+
+- 👤 **Character Browser**  
+  Browse and paginate through all characters with detailed profile views.
+
+- 📺 **Episode & Location Listings**  
+  Explore episodes and locations with rich metadata and structured detail screens.
+
+- 🔍 **Search Functionality**  
+  Search across characters, episodes, and locations using API-backed filtering.
+
+- 📄 **Pagination Support**  
+  Incrementally load additional content for improved performance and UX.
+
+- 🧠 **MVVM Architecture**  
+  Clean separation of concerns between views, view models, and models.
+
+- 🖼️ **Caching & Image Loading**  
+  Optimized performance via API response caching and image caching.
+
+
+---
+
+## 🏗️ Architecture & Design
+
+- **Architecture Pattern:** MVVM (Model–View–ViewModel)
+- **UI Framework:** UIKit (with selective SwiftUI usage)
+- **Networking:** URLSession with a reusable request/service layer
+- **Caching:**  
+  - `RMAPICacheManager` for API responses  
+  - `RMImageLoader` for image caching
+- **Dependency Management:** Native Xcode tooling (no third-party frameworks)
+
+This architecture ensures:
+- High testability
+- Clear separation of responsibilities
+- Scalability for future feature expansion
+
+---
+
+## 🛠️ Tech Stack & Requirements
+
+- **Language:** Swift  
+- **UI Framework:** UIKit (with selective SwiftUI integration)  
+- **Networking:** URLSession  
+- **Architecture:** MVVM  
+- **Minimum iOS Version:** iOS 15.0+  
+- **Xcode:** 14.0+  
+- **macOS:** 12.0+  
+
+---
+
