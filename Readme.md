@@ -40,6 +40,59 @@ Navigation is handled via a **tab bar–based interface**, with dedicated screen
 
 ---
 
+## Screenshots
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./RMScreenshots/Launchscreen.png" width="250" /><br/>
+      <b>Launch Screen</b>
+    </td>
+    <td align="center">
+      <img src="./RMScreenshots/SearchScreen.png" width="250" /><br/>
+      <b>Search Screen</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./RMScreenshots/CharacterListscreen.png" width="250" /><br/>
+      <b>Character List Screen</b>
+    </td>
+    <td align="center">
+      <img src="./RMScreenshots/CharacterDetailscreen.png" width="250" /><br/>
+      <b>Character Detail Screen</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./RMScreenshots/EpisodeList.png" width="250" /><br/>
+      <b>Episode List Screen</b>
+    </td>
+    <td align="center">
+      <img src="./RMScreenshots/EpisodeDetailscreen.png" width="250" /><br/>
+      <b>Episode Detail Screen</b>
+    </td>
+  </tr>
+</table>
+<tr>
+    <td align="center">
+      <img src="./RMScreenshots/LocationList screen.png" width="250" /><br/>
+      <b>Location List Screen</b>
+    </td>
+    <td align="center">
+      <img src="./RMScreenshots/LocatiomDetailscreen.png" width="250" /><br/>
+      <b>Location Detail Screen</b>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="./RMScreenshots/Settingsscreen.png" width="250" /><br/>
+      <b>Settings Screen</b>
+    </td>
+  </tr>
+</table>
+
 ## 🏗️ Architecture & Design
 
 - **Architecture Pattern:** MVVM (Model–View–ViewModel)
